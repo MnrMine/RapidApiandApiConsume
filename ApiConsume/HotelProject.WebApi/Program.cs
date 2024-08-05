@@ -3,6 +3,9 @@ using HotelProject.BusinessLayer.Concrete;
 using HotelProject.DataAccessLayer.Abstract;
 using HotelProject.DataAccessLayer.Concrete;
 using HotelProject.DataAccessLayer.EntityFramework;
+using System.Reflection;
+using HotelProject.WebApi.Mapping;
+using HotelProject.EntityLayer.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,42 @@ builder.Services.AddScoped<ISubscribeService, SubscribeManager>();
 builder.Services.AddScoped<ITestimonialDal, EfTestimonialDal>();
 builder.Services.AddScoped<ITestimonialService, TestimonialManager>();
 
+builder.Services.AddScoped<IAboutDal, EfAboutDal>();
+builder.Services.AddScoped<IAboutService, AboutManager>();
+
+
+//builder.Services.AddScoped<IBookingDal, EfBookingDal>();
+//builder.Services.AddScoped<IBookingService, BookingManager>();
+
+//builder.Services.AddScoped<IContactDal, EfContactDal>();
+//builder.Services.AddScoped<IContactService, ContactManager>();
+
+//builder.Services.AddScoped<IGuestDal, EfGuestDal>();
+//builder.Services.AddScoped<IGuestService, GuestManager>();
+
+//builder.Services.AddScoped<ISendMessageDal, EfSendMessageDal>();
+//builder.Services.AddScoped<ISendMessageService, SendMessageManager>();
+
+//builder.Services.AddScoped<IMessageCategoryDal, EfMessageCategoryDal>();
+//builder.Services.AddScoped<IMessageCategoryService, MessageCategoryManager>();
+
+//builder.Services.AddScoped<IAppUserDal, EfAppUserDal>();
+//builder.Services.AddScoped<IAppUserService, AppUserManager>();
+
+//builder.Services.AddScoped<IWorkLocationDal, EfWorkLocationDal>();
+//builder.Services.AddScoped<IWorkLocationService, WorkLocationManager>();
+
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("OtelApiCors", opts =>
+    {
+        opts.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -38,7 +77,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
-
+app.UseCors("OtelApiCors");
 app.UseAuthorization();
 
 app.MapControllers();
